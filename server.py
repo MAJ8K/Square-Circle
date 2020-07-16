@@ -28,10 +28,57 @@ serverup = True
 def server_control():   # control C to stop the server
     pass
 
+BLOCKS = [
+    (325,225,150,150),
+    (-100,575,450,300),
+    (450,575,450,300),
+    (-100,0,450,25),
+    (450,0,450,25),
+    (-10,400,310,50),
+    (750,400,60,50),
+    (575,100,75,400),
+    (100,100,75,75),
+    (300,100,75,75)
+]
+
+PLAYERSIZE = 10
+values = {
+    "xv" : 0.0,
+    "yv" : 0.0,
+    "xa" : 0.0,
+    "ya" : 0.0,
+    "xf" : 0.0,
+    "yf" : 0.0,
+    "jump" : False
+}
+
 players = []
 bullets = []
-Mid = -1
-edges = (-5,-5,805,605)
+pvels = {}
+G = .03
+
+edges = (-10,-10,810,610)
+
+def collision(id):
+    p = players[id]
+    hp = p.size/2
+    for X in BLOCKS:
+        hwid = X[2]/2
+        hhig = X[3]/2
+        Xxc = X[0] + hwid - p.size
+        Xyc = X[1] + hhig - p.size
+        dx = p.x - Xxc
+        dy = p.y - Xyc
+        if abs(dx) < hwid:
+            if p.y > Xyc - hhig - hp and p.y < Xyc + hhig + hp:
+                p.y = Xyc + ((hhig + hp) * dy/abs(dy))
+                pvels[id]["ya"] -= G
+                if dy < 0:
+                    pvels[id]["jump"] = True
+        if abs(dy) < hhig:
+            if p.x > Xxc - hwid - hp and p.x < Xxc + hwid + hp:
+                p.x = Xxc + ((hwid + hp) * dx/abs(dx))
+                pvels[id]["ya"] -= G
 
 def controlP(Controls, id):
     p = players[id]
@@ -41,18 +88,36 @@ def controlP(Controls, id):
     right = Controls[3]
     shoot = Controls[4]
 
-    ymov,xmov = 0,0
-    if up:
-        ymov += 1
-    if down:
-        ymov += -1
-    if right:
-        xmov += 1
-    if left:
-        xmov += -1
+    K = .4
+    decc = lambda a: a*K
 
-    p.x += xmov
-    p.y -= ymov
+    if up:
+        if pvels[id]["jump"]:
+            pvels[id]["jump"] = False
+            pvels[id]["ya"] -= 1
+        else:
+            pvels[id]["ya"] -= 0.01
+    if down:
+        pvels[id]["ya"] += 0.01
+    if right:
+        pvels[id]["xa"] += 0.01
+    if left:
+        pvels[id]["xa"] -= 0.01
+
+    pvels[id]["ya"] += G
+    if pvels[id]["ya"] > 1:
+        pvels[id]["ya"] = 1
+    if pvels[id]["ya"] < -1.5:
+        pvels[id]["ya"] = -1.5
+    collision(id)
+    pvels[id]["xa"] -= decc(pvels[id]["xa"])
+    pvels[id]["ya"] -= decc(pvels[id]["ya"])
+    K = 0.01
+    pvels[id]["xv"] += pvels[id]["xa"] - decc(pvels[id]["xv"])
+    pvels[id]["yv"] += pvels[id]["ya"] - decc(pvels[id]["yv"])
+
+    p.x += pvels[id]["xv"]
+    p.y += pvels[id]["yv"]
 
     if p.x > edges[2]:
         p.x = edges[0]
@@ -91,11 +156,10 @@ def assignId():
     x = randint(0,800)
     y = randint(0,600)
     color = (randint(0,255),randint(0,255),randint(0,255))
-    d = Entity(x,y,color,10)
+    d = Entity(x,y,color,PLAYERSIZE)
 
     assigned = False
     i = 0
-
     for i,X in enumerate(players):
         if not X:
             assigned = True
@@ -106,6 +170,9 @@ def assignId():
     else:
         i = len(players)
         players.append(d)
+    
+    pvels[i] = values.copy()
+
     return i
 
 while serverup:

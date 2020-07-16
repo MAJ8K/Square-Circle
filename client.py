@@ -14,18 +14,30 @@ window = pygame.display.set_mode((width,height))
 pygame.display.set_caption("Client")
 WHITE = (255,255,255)
 
-pSize = 10
-Wrect = (400 - pSize/2, 300 - pSize/2, pSize, pSize)
+Brect = [
+    (325,225,150,150),
+    (-100,575,450,300),
+    (450,575,450,300),
+    (-100,0,450,25),
+    (450,0,450,25),
+    (-10,400,310,50),
+    (750,400,60,50),
+    (575,100,75,400),
+    (100,100,75,75),
+    (300,100,75,75)
+] 
 
 def redrawWin(Data):
     window.fill((0,0,0))
     for X in Data[0]:
         if X:
-            rect = (X.x,X.y,X.size,X.size)
+            rect = (int(X.x + X.size/2),int(X.y + X.size/2),X.size,X.size)
             pygame.draw.rect(window, X.color, rect)
     for Y in Data[1]:
-        pass
-    pygame.draw.rect(window, WHITE, Wrect)
+        if Y:
+            pygame.draw.circle(window,Y.color,(Y.x,Y.y),Y.size)
+    for Z in Brect:
+        pygame.draw.rect(window, WHITE, Z)
     pygame.display.update()
 
 def main():
