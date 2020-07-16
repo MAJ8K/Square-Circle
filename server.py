@@ -3,11 +3,12 @@
 ####
 ####
 ####
+from random import randint
+from splayer import Entity
 import socket
 import pickle
 from _thread import *
 import sys
-from random import randint
 
 server = "192.168.1.253"
 port = 5555
@@ -30,6 +31,7 @@ def server_control():   # control C to stop the server
 players = []
 bullets = []
 Mid = -1
+edges = (-5,-5,805,605)
 
 def controlP(Controls, id):
     p = players[id]
@@ -48,6 +50,18 @@ def controlP(Controls, id):
         xmov += 1
     if left:
         xmov += -1
+
+    p.x += xmov
+    p.y -= ymov
+
+    if p.x > edges[2]:
+        p.x = edges[0]
+    if p.x < edges[0]:
+        p.x = edges[2]
+    if p.y > edges[3]:
+        p.y = edges[1]
+    if p.y < edges[1]:
+        p.y = edges[3]
 
     
 
@@ -77,16 +91,16 @@ def assignId():
     x = randint(0,800)
     y = randint(0,600)
     color = (randint(0,255),randint(0,255),randint(0,255))
-    d = (x,y,color)
+    d = Entity(x,y,color,10)
 
     assigned = False
-    i = len(players) -1
-    while (i >= 0):
-        if not players[i]:
+    i = 0
+
+    for i,X in enumerate(players):
+        if not X:
             assigned = True
             break
-        i -= 1
-    
+        
     if assigned:
         players[i] = d
     else:

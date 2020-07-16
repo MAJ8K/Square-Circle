@@ -1,4 +1,5 @@
 from network import Network
+from splayer import Entity
 import pygame
 
 N = Network()
@@ -20,8 +21,8 @@ def redrawWin(Data):
     window.fill((0,0,0))
     for X in Data[0]:
         if X:
-            rect = (X[0],X[1],pSize,pSize)
-            pygame.draw.rect(window, X[2], rect)
+            rect = (X.x,X.y,X.size,X.size)
+            pygame.draw.rect(window, X.color, rect)
     for Y in Data[1]:
         pass
     pygame.draw.rect(window, WHITE, Wrect)
