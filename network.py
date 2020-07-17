@@ -2,9 +2,9 @@ import socket
 import pickle
 
 class Network:
-    def __init__(self):
+    def __init__(self,server = "192.168.1.253"):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "192.168.1.253"
+        self.server = server
         self.port = 5555
         self.addy = (self.server, self.port)
         self.id = self.connect()

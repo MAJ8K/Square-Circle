@@ -11,6 +11,7 @@ from _thread import *
 import sys
 
 server = "192.168.1.253"
+server = input("enter the server id: ")
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -43,17 +44,25 @@ BLOCKS = [
 
 PLAYERSIZE = 10
 values = {
+    "U" : 0,
+    "D" : 0,
+    "L" : 0,
+    "R" : 0,
+    "shot" : 0,
     "xv" : 0.0,
     "yv" : 0.0,
     "xa" : 0.0,
     "ya" : 0.0,
     "xf" : 0.0,
     "yf" : 0.0,
-    "jump" : False
+    "jump" : False,
+    "charge" : False,
+    "timeout" : False
 }
 
 players = []
-bullets = []
+bullets = {}
+bdir = {}
 pvels = {}
 G = .03
 
@@ -65,8 +74,8 @@ def collision(id):
     for X in BLOCKS:
         hwid = X[2]/2
         hhig = X[3]/2
-        Xxc = X[0] + hwid - p.size
-        Xyc = X[1] + hhig - p.size
+        Xxc = X[0] + hwid - hp
+        Xyc = X[1] + hhig - hp
         dx = p.x - Xxc
         dy = p.y - Xyc
         if abs(dx) < hwid:
@@ -87,22 +96,98 @@ def controlP(Controls, id):
     left = Controls[1]
     right = Controls[3]
     shoot = Controls[4]
+    pcx = p.x + p.size/2
+    pcy = p.y + p.size/2
+    bid = id*3 + pvels[id]["shot"]
+    pointx,pointy = 0,0
 
     K = .4
     decc = lambda a: a*K
 
     if up:
+        if pvels[id]["U"] == 0:
+            pvels[id]["U"] = 2
+            if pvels[id]["D"] == 2:
+                pvels[id]["D"] = 1
+            if pvels[id]["L"] == 2:
+                pvels[id]["L"] = 1
+            if pvels[id]["R"] == 2:
+                pvels[id]["R"] = 1
         if pvels[id]["jump"]:
             pvels[id]["jump"] = False
             pvels[id]["ya"] -= 1
         else:
             pvels[id]["ya"] -= 0.01
+    else:
+        pvels[id]["U"] = 0
     if down:
+        if pvels[id]["D"] == 0:
+            pvels[id]["D"] = 2
+            if pvels[id]["U"] == 2:
+                pvels[id]["U"] = 1
+            if pvels[id]["L"] == 2:
+                pvels[id]["L"] = 1
+            if pvels[id]["R"] == 2:
+                pvels[id]["R"] = 1
         pvels[id]["ya"] += 0.01
+    else:
+        pvels[id]["D"] = 0
     if right:
+        if pvels[id]["R"] == 0:
+            pvels[id]["R"] = 2
+            if pvels[id]["D"] == 2:
+                pvels[id]["D"] = 1
+            if pvels[id]["L"] == 2:
+                pvels[id]["L"] = 1
+            if pvels[id]["U"] == 2:
+                pvels[id]["U"] = 1
         pvels[id]["xa"] += 0.01
+    else:
+        pvels[id]["R"] = 0
     if left:
+        if pvels[id]["L"] == 0:
+            pvels[id]["L"] = 2
+            if pvels[id]["D"] == 2:
+                pvels[id]["D"] = 1
+            if pvels[id]["U"] == 2:
+                pvels[id]["U"] = 1
+            if pvels[id]["R"] == 2:
+                pvels[id]["R"] = 1
         pvels[id]["xa"] -= 0.01
+    else:
+        pvels[id]["L"] = 0
+    
+    if pvels[id]["U"] == 2:
+        pointy = -2
+    if pvels[id]["D"] == 2:
+        pointy = 2
+    if pvels[id]["L"] == 2:
+        pointx = -2
+    if pvels[id]["R"] == 2:
+        pointx = 2
+
+    if shoot:
+        if pvels[id]["charge"]:
+            bullets[bid] = Entity(pcx,pcy,pvels[id]["bcolor"],p.size/2)
+        else:
+            bdir[bid] = {"x" : 0, "y" : 0} 
+            pvels[id]["charge"] = True
+    else:
+        if pvels[id]["charge"]:
+            pvels[id]["charge"] = False
+            bdir[bid]["x"], bdir[bid]["y"] = pointx,pointy
+            pvels[id]["shot"] = (pvels[id]["shot"] + 1) % 3
+        pass
+
+    ##### bullet Phys #####
+
+    for i in range(3):
+        if id*3 + i in bullets:
+            bullets[id*3 + i].x += bdir[id*3 + i]["x"]
+            bullets[id*3 + i].y += bdir[id*3 + i]["y"]
+
+
+    ##### player Phys #####
 
     pvels[id]["ya"] += G
     if pvels[id]["ya"] > 1:
@@ -128,10 +213,28 @@ def controlP(Controls, id):
     if p.y < edges[1]:
         p.y = edges[3]
 
+    ##### bullet collision #####
+    for Z in bullets:
+        if Z >= id*3 and Z < (id+1)*3 :
+            pass
+        else:
+            dx = abs(bullets[Z].x - p.x)
+            dy = abs(bullets[Z].y - p.y)
+            if dy < p.size + bullets[Z].size and dx < p.size + bullets[Z].size:
+                bullets.pop(Z)
+                pvels[id]["timeout"] = True
+                p.x = -1000
+                p.y = -1000
+
+
     
 
 def client_thread(conn,id):
     reply = ""
+    bred = abs(players[id].color[0] - 255)
+    bgreen = abs(players[id].color[1] - 255)
+    bblue = abs(players[id].color[2] - 255)
+    pvels[id]["bcolor"] = (bred,bgreen,bblue)
     #data = pickle.loads(conn.recv(2048))
     ptype = "play"
     #if data == "spec":
@@ -143,7 +246,10 @@ def client_thread(conn,id):
             if not data:
                 break
             if ptype == "play":
-                controlP(data,id)
+                if pvels[id]["timeout"]:
+                    pass
+                else:
+                    controlP(data,id)
                 reply = (players,bullets)
             conn.send(pickle.dumps(reply))
         except:

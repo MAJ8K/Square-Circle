@@ -2,7 +2,10 @@ from network import Network
 from splayer import Entity
 import pygame
 
-N = Network()
+server = ""
+server = input("enter the server id: ")
+
+N = Network(server)
 client = N.id
 #N.send("play")
 
@@ -31,13 +34,13 @@ def redrawWin(Data):
     window.fill((0,0,0))
     for X in Data[0]:
         if X:
-            rect = (int(X.x + X.size/2),int(X.y + X.size/2),X.size,X.size)
+            rect = (int(X.x),int(X.y),X.size,X.size)
             pygame.draw.rect(window, X.color, rect)
-    for Y in Data[1]:
-        if Y:
-            pygame.draw.circle(window,Y.color,(Y.x,Y.y),Y.size)
-    for Z in Brect:
-        pygame.draw.rect(window, WHITE, Z)
+    for Y in Brect:
+        pygame.draw.rect(window, WHITE, Y)
+    for Z in Data[1].values():
+        if Z:
+            pygame.draw.circle(window,Z.color,(int(Z.x),int(Z.y)),int(Z.size))
     pygame.display.update()
 
 def main():
