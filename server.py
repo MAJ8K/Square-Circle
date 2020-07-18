@@ -1,7 +1,4 @@
 ####
-####    Must make a player class tuples cant be changed
-####
-####
 ####
 from random import randint
 from splayer import Entity
@@ -221,10 +218,11 @@ def controlP(Controls, id):
             dx = abs(bullets[Z].x - p.x)
             dy = abs(bullets[Z].y - p.y)
             if dy < p.size + bullets[Z].size and dx < p.size + bullets[Z].size:
-                bullets.pop(Z)
+                #bullets.pop(Z)
                 pvels[id]["timeout"] = True
                 p.x = -1000
                 p.y = -1000
+                pass
 
 
     
