@@ -6,6 +6,7 @@ import socket
 import pickle
 from _thread import *
 import sys
+import time
 
 server = "192.168.1.253"
 server = input("enter the server id: ")
@@ -39,7 +40,7 @@ BLOCKS = [
     (300,100,75,75)
 ]
 
-PLAYERSIZE = 10
+PLAYERSIZE = 16
 values = {
     "U" : 0,
     "D" : 0,
@@ -52,9 +53,10 @@ values = {
     "ya" : 0.0,
     "xf" : 0.0,
     "yf" : 0.0,
+    "timestart" : 0.0,
     "jump" : False,
     "charge" : False,
-    "timeout" : False
+    "timeout" : False,
 }
 
 players = []
@@ -219,6 +221,7 @@ def controlP(Controls, id):
             dy = abs(bullets[Z].y - p.y)
             if dy < p.size + bullets[Z].size and dx < p.size + bullets[Z].size:
                 #bullets.pop(Z)
+                pvels[id]["timestart"] = time.time()
                 pvels[id]["timeout"] = True
                 p.x = -1000
                 p.y = -1000
@@ -229,6 +232,7 @@ def controlP(Controls, id):
 
 def client_thread(conn,id):
     reply = ""
+    elapsedt = 0.0
     bred = abs(players[id].color[0] - 255)
     bgreen = abs(players[id].color[1] - 255)
     bblue = abs(players[id].color[2] - 255)
@@ -245,7 +249,11 @@ def client_thread(conn,id):
                 break
             if ptype == "play":
                 if pvels[id]["timeout"]:
-                    pass
+                    elapsedt = time.time() - pvels[id]["timestart"]
+                    if elapsedt > 10.0:
+                        pvels[id]["timeout"] = False
+                        players[id].x = randint(0,800)
+                        players[id].y = randint(0,600)
                 else:
                     controlP(data,id)
                 reply = (players,bullets)
