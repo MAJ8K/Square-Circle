@@ -8,7 +8,7 @@ from _thread import *
 import sys
 import time
 
-server = "192.168.1.253"
+server = "192.168.1.177"
 server = input("enter the server id: ")
 port = 5555
 
