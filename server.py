@@ -8,7 +8,7 @@ from _thread import *
 import sys
 import time
 
-server = "192.168.1.177"
+server = "192.168.1.253"
 server = input("enter the server id: ")
 port = 5555
 
@@ -22,7 +22,6 @@ except socket.error as e:
 s.listen()
 print("Server started")
 serverup = True
-    
 
 def server_control():   # control C to stop the server
     pass
