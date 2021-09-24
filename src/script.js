@@ -1,3 +1,36 @@
+if ("serviceWorker" in navigator){
+    navigator.serviceWorker.register("sw.js").then(registration => {
+    }).catch(err => {
+        console.error("SW Registration Fail");
+        console.error(err);
+    });
+}else console.error(
+        'app not supported SW not in navigator'
+);
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+// ----------------- Input GUI ----------------- //
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+
+
+for (const btn of document.getElementsByTagName('input')){
+    btn.style.gridArea = btn.id;
+    btn.addEventListener('touchstart', e => {
+        console.log(`start: ${btn.id}`);
+    });
+    btn.addEventListener('touchend', e => {
+        console.log(`end: ${btn.id}`);
+    });
+}
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
 const engine = Matter.Engine.create();
 engine.gravity = {x:0,y:0};
 var shot = 0;
@@ -8,7 +41,7 @@ const render = Matter.Render.create({
     options: {
         width: 400,
         height: 400,
-        background: '#222',
+        background: '#000',
         hasBounds: true,
         wireframes: false,
         showPositions: true,
@@ -76,7 +109,7 @@ var bullets = [
     Matter.Bodies.circle(300,3000,15,bopts),
     Matter.Bodies.circle(300,3000,15,bopts)
 ]
-var camera = Matter.Bodies.rectangle(200,0,400,400,
+var camera = Matter.Bodies.rectangle(200,0,1000,1000,
     {
         label: 'Camera',
         collisionFilter:{
@@ -114,7 +147,7 @@ Matter.Render.run(render);
 // Game Loop
 var grav = {x:0,y:0.001}
 Matter.Events.on(render, "afterRender", e => {
-    // Matter.Render.lookAt(render,camera);
+    Matter.Render.lookAt(render,camera);
 
     player.force = player.gravity
     if(key.up) player.force.y -= 0.001;
@@ -157,7 +190,6 @@ Matter.Events.on(render, "afterRender", e => {
             break;
     }
 });
-console.log(bullets[0])
 
 // Event Listeners
 let key = {up:false,down:false,left:false,right:false}

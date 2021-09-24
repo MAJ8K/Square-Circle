@@ -10,6 +10,41 @@ body {
     background-color: #222;
     display: grid;
     justify-content: center;
-    align-content: center;
+    align-content: start;
 }
-body>canvas { border-radius: 2em; }
+body>canvas {
+    margin: 2.5vh;
+    border-radius: 2em;
+    width: min(95vh,95vw);
+    height: min(95vh,95vw);
+    background-color: black;
+}
+
+#dirbtns{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: grid;
+    grid-template-areas: 
+        '... upp ...'
+        'lft ... rig'
+        '... dwn ...';
+    clip-path: circle();
+    width: 180px;
+    height: 180px;
+}
+#dirbtns>*{background-color: #69696966;}
+#actbtns{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: grid;
+    grid-template-areas: 
+        '... sht'
+        'jmp ...';
+    width: 150px;
+    height: 200px;
+}
+#actbtns>*{clip-path: circle();}
+#sht{background-color: #ff7f5066;}
+#jmp{background-color: #daa52066;}
