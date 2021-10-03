@@ -26,7 +26,7 @@ body>canvas {
     left: 10px;
     display: grid;
     grid-template-areas: 
-        '... 0 ...'
+        '... upp ...'
         'lft ... rig'
         '... dwn ...';
     clip-path: circle();
@@ -41,10 +41,26 @@ body>canvas {
     display: grid;
     grid-template-areas: 
         '... sht'
-        'jmp ...';
-    width: 150px;
+        'jmp jmp';
+    width: 125px;
     height: 200px;
 }
 #actbtns>*{clip-path: circle();}
 #sht{background-color: #ff7f5066;}
 #jmp{background-color: #daa52066;}
+#stt{
+    position: absolute;
+    right: 75px;
+    bottom: 195px;
+    width: 50px;
+    height: 50px;
+    clip-path: circle();
+}
+#sel{
+    position: absolute;
+    left: 75px;
+    bottom: 195px;
+    width: 50px;
+    height: 50px;
+    clip-path: circle();
+}

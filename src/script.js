@@ -10,36 +10,6 @@ if ("serviceWorker" in navigator){
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
-// ----------------- Input GUI ----------------- //
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-let In = [false, false, false, false, false, false]
-for (const btn of document.getElementsByTagName('input')){
-    btn.style.gridArea = btn.id;
-    btn.addEventListener('touchstart', e => {
-        console.log(`start: ${btn.id}`);
-        In[btn.value] = true;
-        if (btn.value == '5') 
-            switch (player.surface) {
-                case 0: player.force.y = -0.03
-                    break;
-                case 1: player.force.y = 0.03
-                    break;
-                case 2: player.force.x = -0.03
-                    break;
-                case 3: player.force.x = 0.03
-                    break;
-            }
-    });
-    btn.addEventListener('touchend', e => {
-        console.log(`end: ${btn.id}`);
-        In[btn.value] = false;
-    });
-}
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
-///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
@@ -53,7 +23,7 @@ const render = Matter.Render.create({
     options: {
         width: 400,
         height: 400,
-        background: '#000',
+        background: '#555',
         hasBounds: true,
         wireframes: false,
         showPositions: true,
@@ -162,10 +132,10 @@ Matter.Events.on(render, "afterRender", e => {
     Matter.Render.lookAt(render,camera);
 
     player.force = player.gravity
-    if(key.up || In[0]) player.force.y -= 0.001;
-    if(key.down || In[3]) player.force.y += 0.001;
-    if(key.left || In[1]) player.force.x -= 0.001;
-    if(key.right || In[2]) player.force.x += 0.001;
+    if(In[0]) player.force.y -= 0.001;
+    if(In[3]) player.force.y += 0.001;
+    if(In[1]) player.force.x -= 0.001;
+    if(In[2]) player.force.x += 0.001;
 
     if(player.position.x > 1020)
         Matter.Body.setPosition(player,
@@ -202,14 +172,40 @@ Matter.Events.on(render, "afterRender", e => {
             break;
     }
 });
-
-// Event Listeners
-let key = {up:false,down:false,left:false,right:false}
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+// ----------------- Input GUI ----------------- //
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+let In = [false, false, false, false,
+    false, false, false, false]
+for (const btn of document.getElementsByTagName('input')){
+    btn.style.gridArea = btn.id;
+    btn.addEventListener('touchstart', e => {
+        In[btn.value] = true;
+        if (btn.value == '5') 
+            switch (player.surface) {
+                case 0: player.force.y = -0.03
+                    break;
+                case 1: player.force.y = 0.03
+                    break;
+                case 2: player.force.x = -0.03
+                    break;
+                case 3: player.force.x = 0.03
+                    break;
+            }
+    });
+    btn.addEventListener('touchend', e => {
+        In[btn.value] = false;
+    });
+}
 window.addEventListener("keydown", e => {
-    if (e.key == 'w') key.up = true;
-    else if (e.key == 's') key.down = true;
-    else if (e.key == 'a') key.left = true;
-    else if (e.key == 'd') key.right = true;
+    if (e.key == 'w') In[0] = true;
+    else if (e.key == 's') In[3] = true;
+    else if (e.key == 'a') In[1] = true;
+    else if (e.key == 'd') In[2] = true;
     
     else if (e.key == 'ArrowUp'){
         Matter.Body.setPosition(bullets[shot],player.position)
@@ -230,14 +226,10 @@ window.addEventListener("keydown", e => {
     shot %= 3
 });
 window.addEventListener("keyup", e => {
-    if (e.key == 'w')
-        key.up = false;
-    else if (e.key == 's')
-        key.down = false;
-    else if (e.key == 'a')
-        key.left = false;
-    else if (e.key == 'd')
-        key.right = false;
+    if (e.key == 'w') In[0] = false;
+    else if (e.key == 's') In[3] = false;
+    else if (e.key == 'a') In[1] = false;
+    else if (e.key == 'd') In[2] = false;
     else if (e.key == ' ')
         switch (player.surface) {
             case 0: player.force.y = -0.03
