@@ -14,6 +14,7 @@ if ("serviceWorker" in navigator){
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 const nav = document.getElementsByTagName('nav')[0];
+const navbtns = nav.getElementsByTagName('input');
 const engine = Matter.Engine.create();
 engine.gravity = {x:0,y:0};
 var shot = 0;
@@ -200,7 +201,6 @@ for (const btn of document.getElementsByTagName('input')){
                     break;
             }
         if (btn.value == '4'){
-            console.log(player.lastdir)
             Matter.Body.setPosition(bullets[shot],player.position)
             if (player.lastdir == 0) bullets[shot++].force.y = -0.05;
             if (player.lastdir == 3) bullets[shot++].force.y = 0.05;
@@ -214,12 +214,12 @@ for (const btn of document.getElementsByTagName('input')){
         if(btn.value == 6) nav.classList.remove('hide');
         if(btn.value == 'G'){
             nav.classList.add('hide');
-            player.render.fillStyle = "#ff0";//from primary color
+            player.render.fillStyle = navbtns[0].value;//from primary color
             for (const bullet of bullets)
-                bullet.render.fillStyle = '#00f';//from secondary color
-            render.options.background = '#000';//bacground color
+                bullet.render.fillStyle = navbtns[1].value;//from secondary color
+            render.options.background = navbtns[2].value;//bacground color
             for (const object of map) 
-                object.render.fillStyle = "#fff";//background secondary color
+                object.render.fillStyle = navbtns[3].value;//background secondary color
         }
     });
 }

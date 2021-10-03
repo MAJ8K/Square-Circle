@@ -33,6 +33,7 @@ body>canvas {
     background-color: black;
 }
 
+input{color: #0000;}
 #dirbtns{
     position: absolute;
     bottom: 10px;
