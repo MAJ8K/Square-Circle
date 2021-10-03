@@ -13,6 +13,7 @@ if ("serviceWorker" in navigator){
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
+const nav = document.getElementsByTagName('nav')[0];
 const engine = Matter.Engine.create();
 engine.gravity = {x:0,y:0};
 var shot = 0;
@@ -79,7 +80,8 @@ var player = Matter.Bodies.rectangle(0,0,30,30,
         collisionFilter:{
             category: 1,
             mask: 1
-        }
+        },
+        lastdir: 0,
     }
 );
 const bopts = { 
@@ -185,6 +187,7 @@ for (const btn of document.getElementsByTagName('input')){
     btn.style.gridArea = btn.id;
     btn.addEventListener('touchstart', e => {
         In[btn.value] = true;
+        if(btn.value < 4) player.lastdir = btn.value;
         if (btn.value == '5') 
             switch (player.surface) {
                 case 0: player.force.y = -0.03
@@ -196,9 +199,28 @@ for (const btn of document.getElementsByTagName('input')){
                 case 3: player.force.x = 0.03
                     break;
             }
+        if (btn.value == '4'){
+            console.log(player.lastdir)
+            Matter.Body.setPosition(bullets[shot],player.position)
+            if (player.lastdir == 0) bullets[shot++].force.y = -0.05;
+            if (player.lastdir == 3) bullets[shot++].force.y = 0.05;
+            if (player.lastdir == 1) bullets[shot++].force.x = -0.05;
+            if (player.lastdir == 2) bullets[shot++].force.x = 0.05;
+        shot %= 3
+        }
     });
     btn.addEventListener('touchend', e => {
         In[btn.value] = false;
+        if(btn.value == 6) nav.classList.remove('hide');
+        if(btn.value == 'G'){
+            nav.classList.add('hide');
+            player.render.fillStyle = "#ff0";//from primary color
+            for (const bullet of bullets)
+                bullet.render.fillStyle = '#00f';//from secondary color
+            render.options.background = '#000';//bacground color
+            for (const object of map) 
+                object.render.fillStyle = "#fff";//background secondary color
+        }
     });
 }
 window.addEventListener("keydown", e => {

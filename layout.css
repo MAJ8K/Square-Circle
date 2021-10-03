@@ -12,6 +12,19 @@ body {
     justify-content: center;
     align-content: start;
 }
+nav{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: #222;
+    color: #fff;
+    display: grid;
+    grid-template-rows: repeat(3,1fr);
+    justify-content: center;
+    text-align: center;
+}
+nav.hide{ display: none;}
+nav input{width: 15em; height: 3em;}
 body>canvas {
     margin: 2.5vh;
     border-radius: 2em;
@@ -51,14 +64,6 @@ body>canvas {
 #stt{
     position: absolute;
     right: 75px;
-    bottom: 195px;
-    width: 50px;
-    height: 50px;
-    clip-path: circle();
-}
-#sel{
-    position: absolute;
-    left: 75px;
     bottom: 195px;
     width: 50px;
     height: 50px;
