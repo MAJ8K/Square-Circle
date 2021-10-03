@@ -14,15 +14,27 @@ if ("serviceWorker" in navigator){
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
-
-
+let In = [false, false, false, false, false, false]
 for (const btn of document.getElementsByTagName('input')){
     btn.style.gridArea = btn.id;
     btn.addEventListener('touchstart', e => {
         console.log(`start: ${btn.id}`);
+        In[btn.value] = true;
+        if (btn.value == '5') 
+            switch (player.surface) {
+                case 0: player.force.y = -0.03
+                    break;
+                case 1: player.force.y = 0.03
+                    break;
+                case 2: player.force.x = -0.03
+                    break;
+                case 3: player.force.x = 0.03
+                    break;
+            }
     });
     btn.addEventListener('touchend', e => {
         console.log(`end: ${btn.id}`);
+        In[btn.value] = false;
     });
 }
 ///////////////////////////////////////////////////
@@ -150,10 +162,10 @@ Matter.Events.on(render, "afterRender", e => {
     Matter.Render.lookAt(render,camera);
 
     player.force = player.gravity
-    if(key.up) player.force.y -= 0.001;
-    if(key.down) player.force.y += 0.001;
-    if(key.left) player.force.x -= 0.001;
-    if(key.right) player.force.x += 0.001;
+    if(key.up || In[0]) player.force.y -= 0.001;
+    if(key.down || In[3]) player.force.y += 0.001;
+    if(key.left || In[1]) player.force.x -= 0.001;
+    if(key.right || In[2]) player.force.x += 0.001;
 
     if(player.position.x > 1020)
         Matter.Body.setPosition(player,
