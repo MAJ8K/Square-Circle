@@ -4,6 +4,7 @@ self.addEventListener('install', e =>{
             "./index.html","./layout.css",
             "./Img/logo192.png","./Img/logo512.png",
             "./src/script.js","./src/matter.min.js",
+            "./sw.js","./manifest.json"
         ]);
     }));
     console.info("Service Worker installed");
