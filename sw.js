@@ -32,7 +32,7 @@ ws.addEventListener('open', e => {
     ws.send("SC Initialization Message")
 });
 
-ws.addEventListener('open', e => {
+ws.addEventListener('close', e => {
     console.debug("Connection Ended");
 });
 
