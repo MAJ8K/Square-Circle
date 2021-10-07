@@ -30,7 +30,6 @@ body>canvas {
     border-radius: 2em;
     width: min(95vh,95vw);
     height: min(95vh,95vw);
-    background-color: black;
 }
 
 input{color: #0000;}

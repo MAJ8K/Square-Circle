@@ -16,28 +16,3 @@ self.addEventListener('fetch', e => {
             return response || fetch(e.request);
     }));
 });
-
-// URL needs to be promoted to "wss://..."
-if(navigator.WebSocket){
-    // init a list of player data
-} else {
-    console.error("WebSocket not supported")
-    // set list of player data to null
-}
-const url = "ws://127.0.0.1:7890";
-const ws = new WebSocket(url);
-
-ws.addEventListener('open', e => {
-    console.debug("Connection Established");
-    ws.send("SC Initialization Message")
-});
-
-ws.addEventListener('close', e => {
-    console.debug("Connection Ended");
-});
-
-ws.addEventListener('message', e => {
-    console.debug(e.data);
-});
-
-
