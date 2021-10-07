@@ -12,10 +12,16 @@ playerdata = []
 async def echo(websocket, path):
     print("A Client just connected")
     conns.add(websocket)
-    playerdata.append(('pcolor','scolor'))
+    mydata = ('pcolor','scolor',0.0,0.0, 0.0,0.0,0.0,0.0,0.0,0.0)
+    playerdata.append(mydata)
     try:
         async for message in websocket:
-            print("Ping: " + message)
+            marker = 0
+            for conn in conns:
+                if (conn == websocket): 
+                    playerdata[marker] = mydata
+                    break
+                marker += 1
             for conn in conns:
                 if(conn == websocket):
                     await conn.send(playerdata)
@@ -24,6 +30,7 @@ async def echo(websocket, path):
         print(e)
     finally:
         conns.remove(websocket)
+        playerdata.pop()
 
 start_server = websockets.serve(echo, "localhost", PORT)
 
