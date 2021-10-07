@@ -21,15 +21,17 @@ const ws = new WebSocket(url);
 
 ws.addEventListener('open', e => {
     console.debug("Connection Established");
-    ws.send("SC Initialization Message")
 });
-
 ws.addEventListener('close', e => {
     console.debug("Connection Ended");
 });
-
+var servedData;
 ws.addEventListener('message', e => {
-    console.debug(e.data);
+    servedData = JSON.parse(e.data);
+    for (const X in servedData) {
+    Matter.Body.setPosition(others[X],
+        {x:servedData[X][2],y:servedData[X][3]});
+    }
 });
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -48,11 +50,9 @@ document.getElementsByTagName('input')){
     if (Number.isInteger(parseInt(btn.value))){
         btn.addEventListener('touchstart', e => {
             buttons[btn.value] = true;
-            console.log(buttons)
         });
         btn.addEventListener('touchend', e => {
             buttons[btn.value] = false;
-            console.log(buttons)
         });
     }
 }
@@ -130,13 +130,25 @@ Matter.Render.run(render);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-const camera = Matter.Bodies.rectangle(0,0,10000,10000,{
+const camera = Matter.Bodies.rectangle(0,0,1000,1000,{
     label:'Camera',
     collisionFilter:{category:0},
     render:{visible:false},
 });
 Matter.Body.setMass(camera, .0000001);
-var player = Matter.Bodies.rectangle(-30,0,30,30,{
+otheroptions = {
+    label:'Other',
+    collisionFilter:{category:0},
+    render:{fillStyle:'blue'},
+};
+const others = [
+    Matter.Bodies.rectangle(0,0,30,30,otheroptions),
+    Matter.Bodies.rectangle(0,0,30,30,otheroptions),
+    Matter.Bodies.rectangle(0,0,30,30,otheroptions),
+    Matter.Bodies.rectangle(0,0,30,30,otheroptions),
+    Matter.Bodies.rectangle(0,0,30,30,otheroptions)
+]
+const player = Matter.Bodies.rectangle(-30,0,30,30,{
     label:'Player',
     gravity:{x:0,y:0},
     friction:0,
@@ -152,8 +164,9 @@ var constraint = Matter.Constraint.create({
     damping: .05,
     render:{visible:false}
 });
-Matter.World.add(engine.world,[player,camera]);
-// Matter.World.add(engine.world,[player,camera,constraint]);
+// Matter.World.add(engine.world,[player,camera]);
+Matter.World.add(engine.world,[player,camera,constraint]);
+Matter.World.add(engine.world,others);
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -164,6 +177,8 @@ Matter.World.add(engine.world,[player,camera]);
 /////////////////////////////////////////////////
 Matter.Events.on(render,"afterRender",e => {
     Matter.Render.lookAt(render,camera);
+
+    const data = servedData;
 
     const grav = [
         {x:0,y:0.9*0.001},{x:0,y:-0.9*0.001},
@@ -191,6 +206,11 @@ Matter.Events.on(render,"afterRender",e => {
     else if(player.position.y < -4980)
         Matter.Body.setPosition(player,
             {x:player.position.x,y:4980});
-    ws.send(player.position);
+    ws.send([
+        player.render.fillStyle,
+        player.render.fillStyle,
+        player.position.x,
+        player.position.y
+    ]);
 });
 
