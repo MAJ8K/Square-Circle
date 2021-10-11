@@ -1,13 +1,15 @@
 FROM python:3
 
-RUN pip3 install websockets
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+WORKDIR /WSapp
 
 ENV PORT=7890
 
 EXPOSE 7890
 
-COPY . /agent
+COPY ./app ./app
 
-WORKDIR /agent
-
-CMD ["python", "main.py"]
+CMD ["python", "app/main.py"]
