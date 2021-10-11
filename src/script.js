@@ -108,16 +108,48 @@ const map = [
     Matter.Bodies.rectangle(-1200, -2500, 250, 250,sopts),
     Matter.Bodies.rectangle(-3500, -2500, 4000, 60,sopts),
     Matter.Bodies.rectangle(-2500, 2500, 60, 2000,sopts),//Left
+    Matter.Bodies.rectangle(-2500, 5000, 60, 1000,sopts),
     Matter.Bodies.rectangle(-2500, -3500, 60, 4000,sopts),
     Matter.Bodies.rectangle(2500, 2000, 60, 1000,sopts),//Right
+    Matter.Bodies.rectangle(2500, -5000, 60, 1000,sopts),
+    Matter.Bodies.rectangle(2500, 5000, 60, 1000,sopts),
     Matter.Bodies.rectangle(2500, -2000, 60, 1000,sopts),
-    Matter.Bodies.rectangle(650, 1000, 750, 60,sopts),//Corners
-    Matter.Bodies.rectangle(-650, -1000, 750, 60,sopts),
-    Matter.Bodies.rectangle(1000, 650, 60, 750,sopts),
-    Matter.Bodies.rectangle(-1000, -650, 60, 750,sopts),
+    Matter.Bodies.rectangle(1150, 1750, 1250, 60,sopts),//Corners
+    Matter.Bodies.rectangle(-1150, -1750, 1250, 60,sopts),
+    Matter.Bodies.rectangle(1750, 1150, 60, 1250,sopts),
+    Matter.Bodies.rectangle(-1750, -1150, 60, 1250,sopts),
     Matter.Bodies.rectangle(0,0,2000,2000,sopts),// Center
+    //Quad1
+    Matter.Bodies.rectangle(-5000,-3500,500,1250,sopts),
+    Matter.Bodies.rectangle(-3500,-5000,1250,500,sopts),
+    //Quad2
+    //Quad3
+    Matter.Bodies.rectangle(4250,-4500,500,1000,sopts),
+    Matter.Bodies.rectangle(5000,-3500,2000,1250,sopts),
+    //Quad4
+    Matter.Bodies.rectangle(-5000,-1250,4000,60,sopts),
+    Matter.Bodies.rectangle(-6000,-750,4000,60,sopts),
+    Matter.Bodies.rectangle(-6500,-250,4000,60,sopts),
+    Matter.Bodies.rectangle(-6500,250,4000,60,sopts),
+    Matter.Bodies.rectangle(-6000,750,4000,60,sopts),
+    Matter.Bodies.rectangle(-5000,1250,4000,60,sopts),
+    //Quad6
+    Matter.Bodies.rectangle(3800,-1900,2000,1000,sopts),
+    Matter.Bodies.rectangle(6500,-1250,4000,60,sopts),
+    Matter.Bodies.rectangle(6000,-750,4000,60,sopts),
+    Matter.Bodies.rectangle(5000,-250,4000,60,sopts),
+    Matter.Bodies.rectangle(5000,250,4000,60,sopts),
+    Matter.Bodies.rectangle(6000,750,4000,60,sopts),
+    Matter.Bodies.rectangle(6500,1250,4000,60,sopts),
+    Matter.Bodies.rectangle(3800,1900,2000,1000,sopts),
     //Quad7
     Matter.Bodies.rectangle(-3000,3000,850,850,sopts),
+    Matter.Bodies.rectangle(-5000,3250,500,1560,sopts),
+    Matter.Bodies.rectangle(-3500,5000,1250,500,sopts),
+    Matter.Bodies.rectangle(-3000,3000,850,850,sopts),
+    //Quad9
+    Matter.Bodies.rectangle(5000,3250,500,1560,sopts),
+    Matter.Bodies.rectangle(4250,5250,500,1000,sopts),
 ];
 Matter.World.add(engine.world,map);
 Matter.Runner.run(engine);
