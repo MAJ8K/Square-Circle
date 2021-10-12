@@ -242,7 +242,10 @@ Matter.Events.on(render,"afterRender",e => {
         player.render.fillStyle,
         player.render.fillStyle,
         player.position.x,
-        player.position.y
+        player.position.y,
+        0.0,0.0,
+        0.0,0.0,
+        0.0,0.0
     ]);
 });
 
