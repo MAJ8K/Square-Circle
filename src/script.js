@@ -16,7 +16,7 @@ if(WebSocket){
     console.error("WebSocket not supported")
     // set list of player data to null
 }
-const url = "ws://127.0.0.1:7890";
+const url = "ws://34.229.169.11:7890";
 const ws = new WebSocket(url);
 
 ws.addEventListener('open', e => {
